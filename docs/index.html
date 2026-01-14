@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Документация TeleKit</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Highlight.js for beautiful code syntax -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        pre {
+            margin: 0 !important;
+            border-radius: 0.5rem;
+        }
+
+        .hljs {
+            padding: 1.5rem !important;
+            background: #1e1e1e !important;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+
+        const copyIcon = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
+        const checkIcon = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+
+        function copyCode(btn) {
+            const pre = btn.nextElementSibling;
+            const code = pre.querySelector('code').innerText;
+
+            navigator.clipboard.writeText(code).then(() => {
+                btn.innerHTML = checkIcon;
+                btn.classList.add('text-green-400');
+
+                setTimeout(() => {
+                    btn.innerHTML = copyIcon;
+                    btn.classList.remove('text-green-400');
+                }, 2000);
+            });
+        }
+    </script>
+</head>
+
+<body class="bg-slate-50 text-slate-900 font-sans">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-white border-b border-slate-200 p-4 sticky top-0 z-20 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-blue-600">TeleKit ⚡</h1>
+        <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')"
+            class="text-slate-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                </path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar"
+        class="fixed top-0 left-0 w-72 h-full bg-white border-r border-slate-200 z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-200 flex flex-col">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-2xl font-bold text-blue-600">TeleKit ⚡</h1>
+            <p class="text-xs text-slate-400 mt-1">v2.0.0 Enterprise Edition</p>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto sidebar-scroll p-6 space-y-8">
+            <div>
+                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Начало</h3>
+                <a href="#intro"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">Введение</a>
+                <a href="#install"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">Установка</a>
+                <a href="#quick-start"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">Быстрый
+                    старт</a>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">База Данных</h3>
+                <a href="#localdb"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">LocalDB
+                    (Встроенная)</a>
+                <a href="#sessions"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">Хранилище
+                    Сессий</a>
+                <a href="#postgres"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">Подключение
+                    PostgreSQL</a>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Основные Команды</h3>
+                <a href="#handlers"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">Обработчики</a>
+                <a href="#scenes"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">Сцены
+                    (Wizards)</a>
+                <a href="#keyboards"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">Клавиатуры</a>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Справочник</h3>
+                <a href="#api-telekit"
+                    class="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform">API
+                    Reference</a>
+            </div>
+        </nav>
+
+        <div class="p-6 border-t border-slate-100 bg-slate-50">
+            <a href="https://github.com/TaHel-UDev/telekit"
+                class="flex items-center gap-2 text-slate-600 hover:text-blue-600 font-medium">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+                GitHub
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-0 md:ml-72 p-8 max-w-5xl">
+
+        <!-- Intro Section -->
+        <header id="intro" class="mb-20 pt-10">
+            <div class="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold mb-4">v2.0.0
+                Stable</div>
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight text-slate-900">
+                Создавайте ботов <br>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">без головной
+                    боли</span>
+            </h1>
+            <p class="text-xl text-slate-600 leading-relaxed max-w-2xl mb-8">
+                Профессиональный фреймворк для Telegram ботов на TypeScript.
+                Встроенная база данных, управление сессиями и сценами из коробки.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <a href="#quick-start"
+                    class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">Начать
+                    работу &rarr;</a>
+                <a href="#api-telekit"
+                    class="bg-white border border-slate-300 text-slate-700 px-8 py-4 rounded-xl font-bold hover:bg-slate-50 transition">API
+                    Справочник</a>
+            </div>
+        </header>
+
+        <hr class="border-slate-200 mb-16">
+
+        <!-- Installation -->
+        <section id="install" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">📦</span> Установка
+            </h2>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </button>
+                <pre><code class="language-bash">npm install telekit-lib</code></pre>
+            </div>
+        </section>
+
+        <!-- Quick Start -->
+        <section id="quick-start" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">⚡</span> Быстрый старт
+            </h2>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </button>
+                <pre><code class="language-typescript">import { TeleKit } from 'telekit-lib';
+
+// 1. Инициализация
+const bot = new TeleKit('YOUR_BOT_TOKEN');
+
+// 2. Простая команда
+bot.command('start', async (ctx) => {
+    await ctx.reply('Привет! Бот успешно запущен.');
+});
+
+// 3. Запуск
+bot.start();</code></pre>
+            </div>
+        </section>
+
+        <!-- Command Menu -->
+        <section id="commands-menu" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">📋</span> Меню команд
+            </h2>
+            <p class="text-slate-600 mb-6">Чтобы у пользователей появилась кнопка "Меню" со списком команд,
+                зарегистрируйте их один раз при старте:</p>
+
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg></button>
+                <pre><code class="language-typescript">await bot.setCommands([
+    { command: 'start', description: 'Запустить бота' },
+    { command: 'help', description: 'Помощь' },
+    { command: 'settings', description: 'Настройки' }
+]);</code></pre>
+            </div>
+        </section>
+
+        <!-- LocalDB -->
+        <section id="localdb" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">📂</span> LocalDB (Прототипирование)
+            </h2>
+
+            <div class="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-lg mb-6 text-sm">
+                <strong>⚠️ Для прототипов:</strong> LocalDB загружает весь JSON-файл в память.
+                Это удобно для старта, но при большой нагрузке используйте <a href="#postgres"
+                    class="underline hover:text-amber-700">PostgreSQL</a> или Redis.
+            </div>
+
+            <p class="text-slate-600 mb-6">
+                <code>LocalDB</code> — это имитация базы данных (похожа на массивы JS), которая сохраняет данные в файл.
+                Отлично подходит для хранения списка товаров, настроек или задач в небольших ботах.
+            </p>
+
+            <h3 class="text-xl font-bold mb-3 text-slate-800">Пример использования</h3>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </button>
+                <pre><code class="language-typescript">import { LocalDB } from 'telekit-lib';
+
+// 1. Опишите тип данных
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+}
+
+// 2. Создайте экземпляр (укажите имя файла)
+const products = new LocalDB&lt;Product&gt;('products.json');
+
+// --- Основные операции ---
+
+// Добавить запись
+await products.push({ id: 1, name: 'iPhone 15', price: 999 });
+
+// Найти одну запись
+const item = await products.findOne(p => p.id === 1);
+if (item) console.log(item.name);
+
+// Найти все записи по условию
+const cheapItems = await products.find(p => p.price < 1000);
+
+// Обновить запись
+await products.update(
+    p => p.id === 1,       // Условие поиска
+    { price: 899 }         // Новые данные
+);
+
+// Удалить запись
+await products.delete(p => p.id === 1);</code></pre>
+            </div>
+        </section>
+
+        <!-- Sessions -->
+        <section id="sessions" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">💾</span> Хранилище Сессий (FileStore)
+            </h2>
+            <p class="text-slate-600 mb-6">Чтобы данные пользователя не исчезали после перезагрузки бота, используйте
+                <code>FileStore</code>.
+            </p>
+
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </button>
+                <pre><code class="language-typescript">import { TeleKit, FileStore } from 'telekit-lib';
+
+// Сессии будут сохраняться в 'sessions.json'
+const bot = new TeleKit('TOKEN', {
+    store: new FileStore('sessions.json')
+});
+
+bot.onText('Имя', (ctx) => {
+    ctx.session.name = 'Алекс';
+    ctx.reply('Запомнил!');
+});</code></pre>
+            </div>
+        </section>
+
+        <!-- Postgres DB -->
+        <section id="postgres" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">🐘</span> Подключение PostgreSQL
+            </h2>
+            <p class="text-slate-600 mb-6">Вы можете хранить сессии пользователей в PostgreSQL. А также использовать
+                базу данных для бизнес-логики бота.</p>
+
+            <h3 class="text-xl font-bold mb-3 text-slate-800">1. Хранение сессий (Session Store)</h3>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </button>
+                <pre><code class="language-typescript">import { ISessionStore } from 'telekit-lib';
+import { Client } from 'pg';
+
+export class PostgresStore implements ISessionStore {
+    private client: Client;
+
+    constructor(connectionString: string) {
+        this.client = new Client({ connectionString });
+        this.client.connect();
+        // Убедитесь, что таблица sessions существует
+        this.client.query(`CREATE TABLE IF NOT EXISTS sessions (
+            key TEXT PRIMARY KEY, 
+            value JSONB
+        )`);
+    }
+
+    async get(key: string) {
+        const res = await this.client.query(
+            'SELECT value FROM sessions WHERE key = $1', 
+            [key]
+        );
+        return res.rows[0]?.value || null;
+    }
+
+    async set(key: string, value: any) {
+        await this.client.query(
+            `INSERT INTO sessions (key, value) VALUES ($1, $2)
+             ON CONFLICT (key) DO UPDATE SET value = $2`,
+            [key, value]
+        );
+    }
+
+    async delete(key: string) {
+        await this.client.query('DELETE FROM sessions WHERE key = $1', [key]);
+    }
+}</code></pre>
+            </div>
+
+            <h3 class="text-xl font-bold mb-3 text-slate-800 mt-8">2. Использование БД в командах (Бизнес-логика)</h3>
+            <p class="text-slate-600 mb-4">Пример того, как выполнять SQL-запросы прямо внутри команд бота.</p>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </button>
+                <pre><code class="language-typescript">import { TeleKit } from 'telekit-lib';
+import { Client } from 'pg';
+
+// 1. Настройка подключения
+const db = new Client({ connectionString: 'postgresql://user:pass@localhost:5432/mydb' });
+await db.connect();
+
+const bot = new TeleKit('TOKEN');
+
+// 2. Команда отображения топа пользователей из БД
+bot.command('top', async (ctx) => {
+    try {
+        // Прямой SQL запрос
+        const res = await db.query(
+            'SELECT username, score FROM users ORDER BY score DESC LIMIT 5'
+        );
+
+        if (res.rows.length === 0) {
+            return ctx.reply('Список пуст.');
+        }
+
+        const text = res.rows
+            .map((u, i) => `${i + 1}. ${u.username} — ${u.score} pts`)
+            .join('\n');
+
+        await ctx.reply(`🏆 Таблица лидеров:\n${text}`);
+    } catch (err) {
+        console.error(err);
+        ctx.reply('Ошибка при получении данных.');
+    }
+});
+
+bot.start();</code></pre>
+            </div>
+        </section>
+
+        <!-- Handlers -->
+        <section id="handlers" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">🎮</span> Обработчики (Handlers)
+            </h2>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </button>
+                <pre><code class="language-typescript">// Точное совпадение
+bot.onText('Меню', (ctx) => ctx.reply('Вот меню...'));
+
+// Регулярное выражение (RegExp)
+bot.onText(/^Привет (.+)$/, (ctx) => {
+    const name = ctx.update.message.text.match(/^Привет (.+)$/)[1];
+    ctx.reply(`Здравствуй, ${name}!`);
+});</code></pre>
+            </div>
+        </section>
+
+        <!-- Scenes -->
+        <section id="scenes" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">🎬</span> Сцены (Wizards)
+            </h2>
+            <p class="text-slate-600 mb-6">Сцены нужны для пошагового сбора данных (например, анкета).</p>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                </button>
+                <pre><code class="language-typescript">import { Scene } from 'telekit-lib';
+
+// Создаем сцену 'register' с тремя шагами
+const registerScene = new Scene('register',
+    // Шаг 1
+    (ctx) => {
+        ctx.reply('Введите ваше имя:');
+        ctx.next(); // Переход к следующему шагу
+    },
+    // Шаг 2
+    (ctx) => {
+        ctx.session.name = ctx.text;
+        ctx.reply('Сколько вам лет?');
+        ctx.next();
+    },
+    // Шаг 3
+    (ctx) => {
+        const age = ctx.text;
+        ctx.reply(`Спасибо, ${ctx.session.name}! Вам ${age} лет.`);
+        ctx.leave(); // Выход из сцены
+    }
+);
+
+bot.addScene(registerScene);
+
+// Команда для входа в сцену
+bot.command('reg', (ctx) => ctx.enter('register'));</code></pre>
+            </div>
+        </section>
+
+        <!-- Keyboards -->
+        <section id="keyboards" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">🎹</span> Клавиатуры
+            </h2>
+
+            <h3 class="text-xl font-bold mb-3 text-slate-800">1. Обычные кнопки (Reply)</h3>
+            <p class="text-slate-600 mb-4">Появляются под полем ввода текста. Удобны для главных меню.</p>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg></button>
+                <pre><code class="language-typescript">import { Keyboard } from 'telekit-lib';
+
+bot.command('menu', (ctx) => {
+    ctx.reply('Выберите действие:', {
+        reply_markup: Keyboard.reply([
+            ['📦 Товары', '🛒 Корзина'], // Ряд 1
+            ['⚙️ Настройки']             // Ряд 2
+        ])
+    });
+});</code></pre>
+            </div>
+
+            <h3 class="text-xl font-bold mb-3 text-slate-800 mt-8">2. Инлайн кнопки (Inline)</h3>
+            <p class="text-slate-600 mb-4">Прикрепляются к сообщению. У каждой кнопки есть <code>callback_data</code>
+                (ID действия) или <code>url</code> (ссылка).</p>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg></button>
+                <pre><code class="language-typescript">bot.command('help', (ctx) => {
+    ctx.reply('Чем помочь?', {
+        reply_markup: Keyboard.inline([
+            // data: 'promo' - это ID кнопки
+            [Keyboard.callback('🔥 Акции', 'promo'), Keyboard.callback('ℹ️ О нас', 'about')],
+            [Keyboard.url('🌐 Наш сайт', 'https://example.com')]
+        ])
+    });
+});</code></pre>
+            </div>
+
+            <h3 class="text-xl font-bold mb-3 text-slate-800 mt-8">3. Обработка нажатий (Callbacks)</h3>
+            <p class="text-slate-600 mb-4">Когда пользователь нажимает Инлайн-кнопку, срабатывает
+                <code>bot.onCallback</code>.
+            </p>
+            <div class="relative group my-4 rounded-lg overflow-hidden shadow-lg border border-slate-800">
+                <button onclick="copyCode(this)"
+                    class="absolute top-3 right-3 p-1.5 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                    title="Copy code"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                        </path>
+                    </svg></button>
+                <pre><code class="language-typescript">// Обработка кнопки 'promo'
+bot.onCallback('promo', (ctx) => {
+    ctx.answerCallback(); // Скрыть часики загрузки
+    ctx.reply('Сегодня скидка 50% на всё!');
+});
+
+// Обработка по шаблону (RegExp)
+// Например, для кнопок 'item_5', 'item_10'
+bot.onCallback(/^item_(\d+)$/, (ctx) => {
+    const itemId = ctx.callbackData.match(/^item_(\d+)$/)[1];
+    ctx.answerCallback(`Выбран товар #${itemId}`); // Показать всплывашку
+    ctx.reply(`Информация о товаре ${itemId}...`);
+});</code></pre>
+            </div>
+        </section>
+
+        <!-- API Reference -->
+        <section id="api-telekit" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-slate-100 p-2 rounded-lg text-2xl">📚</span> API Справочник
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Context Methods -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-slate-800 border-b pb-2">Context (ctx)</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <code
+                                class="text-blue-600 font-bold bg-blue-50 px-2 py-1 rounded">ctx.reply(text, extra?)</code>
+                            <p class="text-sm text-slate-600 mt-1">Отправить сообщение.</p>
+                        </li>
+                        <li>
+                            <code
+                                class="text-blue-600 font-bold bg-blue-50 px-2 py-1 rounded">ctx.answerCallback(text?, alert?)</code>
+                            <p class="text-sm text-slate-600 mt-1">Ответить на нажатие кнопки (скрыть часики).</p>
+                        </li>
+                        <li>
+                            <code
+                                class="text-blue-600 font-bold bg-blue-50 px-2 py-1 rounded">ctx.editMessageText(text, extra?)</code>
+                            <p class="text-sm text-slate-600 mt-1">Изменить текст текущего сообщения.</p>
+                        </li>
+                        <li>
+                            <code
+                                class="text-blue-600 font-bold bg-blue-50 px-2 py-1 rounded">ctx.deleteMessage()</code>
+                            <p class="text-sm text-slate-600 mt-1">Удалить текущее сообщение.</p>
+                        </li>
+                        <li>
+                            <code class="text-blue-600 font-bold bg-blue-50 px-2 py-1 rounded">ctx.session</code>
+                            <p class="text-sm text-slate-600 mt-1">Объект сессии пользователя.</p>
+                        </li>
+                        <li>
+                            <code class="text-blue-600 font-bold bg-blue-50 px-2 py-1 rounded">ctx.enter(sceneId)</code>
+                            <p class="text-sm text-slate-600 mt-1">Войти в сцену.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- TeleKit Methods -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-slate-800 border-b pb-2">TeleKit (bot)</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <code class="text-purple-600 font-bold bg-purple-50 px-2 py-1 rounded">bot.start()</code>
+                            <p class="text-sm text-slate-600 mt-1">Запустить бота.</p>
+                        </li>
+                        <li>
+                            <code
+                                class="text-purple-600 font-bold bg-purple-50 px-2 py-1 rounded">bot.command(cmd, handler)</code>
+                            <p class="text-sm text-slate-600 mt-1">Подписка на команду (/start).</p>
+                        </li>
+                        <li>
+                            <code
+                                class="text-purple-600 font-bold bg-purple-50 px-2 py-1 rounded">bot.onText(trigger, handler)</code>
+                            <p class="text-sm text-slate-600 mt-1">Подписка на текст (строка или RegExp).</p>
+                        </li>
+                        <li>
+                            <code
+                                class="text-purple-600 font-bold bg-purple-50 px-2 py-1 rounded">bot.onCallback(trigger, handler)</code>
+                            <p class="text-sm text-slate-600 mt-1">Подписка на инлайн-кнопку.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+
+</html>

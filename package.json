@@ -1,0 +1,29 @@
+{
+  "name": "telekit-lib",
+  "version": "2.0.1",
+  "description": "Профессиональный TypeScript фреймворк для Telegram ботов со встроенной LocalDB",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "typescript",
+    "telekit",
+    "framework",
+    "database"
+  ],
+  "author": "TaHel-UDev",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "typegram": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
