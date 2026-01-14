@@ -1,6 +1,6 @@
 {
   "name": "telekit-lib",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Профессиональный TypeScript фреймворк для Telegram ботов со встроенной LocalDB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
