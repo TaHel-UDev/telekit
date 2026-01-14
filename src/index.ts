@@ -39,8 +39,8 @@ export class LocalDB<T extends object> {
         }
     }
 
-    private save() {
-        fs.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2));
+    private async save() {
+        await fs.promises.writeFile(this.filePath, JSON.stringify(this.data, null, 2));
     }
 
     // --- Public API ---
@@ -48,7 +48,7 @@ export class LocalDB<T extends object> {
     /** Добавить запись */
     async push(item: T) {
         this.data.push(item);
-        this.save();
+        await this.save();
     }
 
     /** Найти одну запись */
@@ -66,7 +66,7 @@ export class LocalDB<T extends object> {
         const item = this.data.find(predicate);
         if (item) {
             Object.assign(item, updates);
-            this.save();
+            await this.save();
             return true;
         }
         return false;
@@ -76,7 +76,7 @@ export class LocalDB<T extends object> {
     async delete(predicate: (item: T) => boolean) {
         const initLength = this.data.length;
         this.data = this.data.filter(item => !predicate(item));
-        if (this.data.length !== initLength) this.save();
+        if (this.data.length !== initLength) await this.save();
     }
 
     /** Получить все записи */
@@ -111,15 +111,17 @@ export class FileStore implements ISessionStore {
     }
     async set(key: string, value: any) {
         let d: any = {};
-        if (fs.existsSync(this.filePath)) { try { d = JSON.parse(fs.readFileSync(this.filePath, 'utf-8')); } catch { } }
+        if (fs.existsSync(this.filePath)) { try { d = JSON.parse(await fs.promises.readFile(this.filePath, 'utf-8')); } catch { } }
         d[key] = value;
-        fs.writeFileSync(this.filePath, JSON.stringify(d, null, 2));
+        await fs.promises.writeFile(this.filePath, JSON.stringify(d, null, 2));
     }
     async delete(key: string) {
         if (!fs.existsSync(this.filePath)) return;
-        const d = JSON.parse(fs.readFileSync(this.filePath, 'utf-8'));
-        delete d[key];
-        fs.writeFileSync(this.filePath, JSON.stringify(d, null, 2));
+        try {
+            const d = JSON.parse(await fs.promises.readFile(this.filePath, 'utf-8'));
+            delete d[key];
+            await fs.promises.writeFile(this.filePath, JSON.stringify(d, null, 2));
+        } catch { }
     }
 }
 
